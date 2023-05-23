@@ -11,36 +11,75 @@ sf::RenderWindow ventana(sf::VideoMode(tamanoVentana, tamanoVentana), "Ultimate 
 
 sf::View view(sf::FloatRect(0, 0, 540, 540));
 
-struct Celda 
+struct Celda
 {
 	sf::RectangleShape forma;
 	Jugador jugador = Jugador::Ninguno;
 };
 
-Celda** tableroPrincipal;
-bool** tableroGrande;
-bool** tableroDisponible;
+Celda** tableroPrincipal; //este tablero contiene a los jugadores X o O
+bool** tableroGrande; //tablero de 3x3 que repsenta el gato mas grande
+bool** tableroDisponible; //tablero del mismo tamaño que el principal de 9x9 el cual contiene las posiciones que estan ocupadas
+bool estaLleno(int, int);
 
+void celdasDisponibles(int fila, int columna);
+
+void celdasDisponibles(int fila, int columna)
+{
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			if ((i % 3) != fila % 3 && (j % 3) != columna % 3)
+			{
+				tableroDisponible[i][j] = (tableroDisponible[i][j]) ? false : true;
+				tableroGrande[i / 3][j / 3] = (tableroGrande[i / 3][j / 3]) ? false : true;
+			}
+		}
+	}
+}
+bool estaLleno(int fila, int columna)
+{
+	int cont = 0;
+	for (int i = fila/3; i < fila/3 + 3; i++)
+	{
+		for (int j = columna/3; j < columna/3 + 3; j++)
+		{
+			if (tableroPrincipal[i][j].jugador != Jugador::Ninguno) cont++;
+		}
+	}
+	if (cont == 9) return true;
+	return false;
+}
 bool manejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual)
 {
-	int x = posicionMouse.x % 540 / tamanoCelda;
-	int y = posicionMouse.y % 540 / tamanoCelda;
+	int columna = posicionMouse.x % 540 / tamanoCelda;
+	int fila = posicionMouse.y % 540 / tamanoCelda;
 
 	int xPequeno = (posicionMouse.x % tamanoCelda) / tamanoTableroPequeno;
 	int yPequeno = (posicionMouse.y % tamanoCelda) / tamanoTableroPequeno;
-	std::cout << " y: " << y << " x: " << x << '\n';
-	if (tableroPrincipal[y][x].jugador == Jugador::Ninguno && tableroPrincipal[y][x].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
-		&& (primeravez || tableroGrande[y / 3][x / 3]))
+	if (tableroPrincipal[fila][columna].jugador == Jugador::Ninguno && tableroPrincipal[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
+		&& (primeravez || (tableroGrande[fila / 3][columna / 3] && !estaLleno(fila, columna))))
 	{
-		tableroPrincipal[y][x].jugador = jugadorActual;
-		tableroDisponible[y][x] = false;
+		tableroPrincipal[fila][columna].jugador = jugadorActual;
+		tableroDisponible[fila][columna] = false;
 		tableroGrande[antY][antX] = false;
-		tableroGrande[y % 3][x % 3] = true;
 
-		antX = x % 3;
-		antY = y % 3;
+		tableroGrande[fila % 3][columna % 3] = true;
+
+		antX = columna % 3;
+		antY = fila % 3;
 		primeravez = false;
+		if (estaLleno(fila, columna))
+		{
+			std::cout << "esta lleno";
+			celdasDisponibles(fila, columna);
+		}
 		return true;
+	}
+	else if (estaLleno(fila, columna))
+	{
+		std::cout << "ola\n";
 	}
 	return false;
 }
@@ -48,14 +87,14 @@ bool manejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual)
 void dibujarTablero(sf::RenderWindow& ventana)
 {
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf")) 
+	if (!fuente.loadFromFile("Minecraft.ttf"))
 	{
 		return;
 	}
 
 	for (int i = 0; i < 9; ++i)
 	{
-		for (int j = 0; j < 9; ++j) 
+		for (int j = 0; j < 9; ++j)
 		{
 			const Celda& celda = tableroPrincipal[i][j];
 			ventana.draw(celda.forma);
@@ -64,7 +103,7 @@ void dibujarTablero(sf::RenderWindow& ventana)
 			simbolo.setFont(fuente);
 			simbolo.setCharacterSize(40);
 
-			if (celda.jugador == Jugador::X) 
+			if (celda.jugador == Jugador::X)
 			{
 				simbolo.setString("X");
 				simbolo.setFillColor(sf::Color::Blue);
@@ -98,11 +137,20 @@ void inicializarTablero()
 		tableroDisponible[i] = new bool[9];
 	}
 
+
 	for (int i = 0; i < 3; i++)
 	{
 		tableroGrande[i] = new bool[3];
 	}
 
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			tableroDisponible[i][j] = false;
+			tableroGrande[i % 3][j % 3] = false;
+		}
+	}
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 9; ++j)
@@ -139,9 +187,9 @@ int main()
 	antX = 0;
 	antY = 0;
 	ventana.setView(view);
-	while (ventana.isOpen()) 
+	while (ventana.isOpen())
 	{
-		while (ventana.pollEvent(evento)) 
+		while (ventana.pollEvent(evento))
 		{
 			sf::Vector2u windowSize = ventana.getSize();
 
@@ -150,16 +198,15 @@ int main()
 				view.setSize(static_cast<float>(windowSize.x), static_cast<float>(windowSize.y));
 				ventana.setView(view);
 			}
-			if (evento.type == sf::Event::Closed) 
+			if (evento.type == sf::Event::Closed)
 			{
 				ventana.close();
 			}
-			else if (evento.type == sf::Event::MouseButtonPressed) 
+			else if (evento.type == sf::Event::MouseButtonPressed)
 			{
 				if (evento.mouseButton.button == sf::Mouse::Left)
 				{
 					sf::Vector2i posicionMouse = sf::Mouse::getPosition(ventana);
-					std::cout << "x:" << posicionMouse.x << "y:" << posicionMouse.y << '\n';
 					if (manejarClick(posicionMouse, jugadorActual))
 						jugadorActual = (jugadorActual == Jugador::X) ? Jugador::O : Jugador::X;
 				}
