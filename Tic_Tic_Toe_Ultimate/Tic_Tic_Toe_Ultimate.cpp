@@ -8,7 +8,6 @@ int antX, antY;
 bool primeravez;
 enum class Jugador { Ninguno, X, O };
 sf::RenderWindow ventana(sf::VideoMode(tamanoVentana, tamanoVentana), "Ultimate Tic Tac Toe");
-
 sf::View view(sf::FloatRect(0, 0, 540, 540));
 
 struct Celda
@@ -20,8 +19,8 @@ struct Celda
 Celda** tableroPrincipal; //este tablero contiene a los jugadores X o O
 bool** tableroGrande; //tablero de 3x3 que repsenta el gato mas grande
 bool** tableroDisponible; //tablero del mismo tamaño que el principal de 9x9 el cual contiene las posiciones que estan ocupadas
-bool estaLleno(int, int);
-
+bool EstaLleno(int, int);
+int HaGanado(int fila,int columna);
 void celdasDisponibles(int fila, int columna);
 
 void celdasDisponibles(int fila, int columna)
@@ -38,12 +37,83 @@ void celdasDisponibles(int fila, int columna)
 		}
 	}
 }
-bool estaLleno(int fila, int columna)
+int HaGanado(int fila, int columna) {
+	int JugX = 0, JugO = 0;
+	//Checa de forma horizontal
+	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++)
+	{
+		for (int j = 3 * (columna / 3); j < 3 * (columna / 3) + 3; j++)
+		{
+			if (tableroPrincipal[i][j].jugador == Jugador::X )JugX++;
+			if (tableroPrincipal[i][j].jugador == Jugador::O)JugO++;
+		}
+		if (JugX == 3) {
+			std::cout << "Jugador 1 ha ganado.";
+			return 1;
+		}
+		if (JugO == 3) {
+			std::cout << "Jugador 2 ha ganado";
+			return 2;
+		}
+	}
+	JugX = 0;
+	JugO = 0;
+	//Checa de forma vertical
+	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++)
+	{
+		for (int j = 3 * (columna / 3); j < 3 * (columna / 3) + 3; j++)
+		{
+			if (tableroPrincipal[j][i].jugador == Jugador::X)JugX++;
+			if (tableroPrincipal[j][i].jugador == Jugador::O)JugO++;
+		}
+		if (JugX == 3) {
+			std::cout << "Jugador 1 ha ganado.";
+			return 1;
+		}
+		if (JugO == 3) {
+			std::cout << "Jugador 2 ha ganado";
+			return 2;
+		}
+	}
+	JugX = 0;
+	JugO = 0;
+	//Checa diagonal izquierda
+	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++) {
+		if (tableroPrincipal[i][i].jugador == Jugador::X)JugX++;
+		if (tableroPrincipal[i][i].jugador == Jugador::O)JugO++;
+	}
+	if (JugX == 3) {
+		std::cout << "Jugador 1 ha ganado.";
+		return 1;
+	}
+	if (JugO == 3) {
+		std::cout << "Jugador 2 ha ganado";
+		return 2;
+	}
+	JugX = 0;
+	JugO = 0;
+	//Checa diagonal derecha
+	for (int i = 3 * (fila / 3)+2; i >= 3 * (fila / 3); i--) {
+		if (tableroPrincipal[i][i].jugador == Jugador::X)JugX++;
+		if (tableroPrincipal[i][i].jugador == Jugador::O)JugO++;
+	}
+	if (JugX == 3) {
+		std::cout << "Jugador 1 ha ganado.";
+		return 1;
+	}
+	if (JugO == 3) {
+		std::cout << "Jugador 2 ha ganado";
+		return 2;
+	}
+	//Si no se encontró ganador, retorna valor NINGUNO
+	return 0;
+}
+bool EstaLleno(int fila, int columna)
 {
 	int cont = 0;
-	for (int i = fila/3; i < fila/3 + 3; i++)
+	for (int i = 3*(fila/3); i < 3*(fila/3) + 3; i++)
 	{
-		for (int j = columna/3; j < columna/3 + 3; j++)
+		for (int j = 3*(columna/3); j < 3*(columna/3) + 3; j++)
 		{
 			if (tableroPrincipal[i][j].jugador != Jugador::Ninguno) cont++;
 		}
@@ -59,25 +129,25 @@ bool manejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual)
 	int xPequeno = (posicionMouse.x % tamanoCelda) / tamanoTableroPequeno;
 	int yPequeno = (posicionMouse.y % tamanoCelda) / tamanoTableroPequeno;
 	if (tableroPrincipal[fila][columna].jugador == Jugador::Ninguno && tableroPrincipal[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
-		&& (primeravez || (tableroGrande[fila / 3][columna / 3] && !estaLleno(fila, columna))))
+		&& (primeravez || (tableroGrande[fila / 3][columna / 3] && !EstaLleno(fila, columna))))
 	{
 		tableroPrincipal[fila][columna].jugador = jugadorActual;
 		tableroDisponible[fila][columna] = false;
 		tableroGrande[antY][antX] = false;
 
 		tableroGrande[fila % 3][columna % 3] = true;
-
+		std::cout << HaGanado(fila, columna);
 		antX = columna % 3;
 		antY = fila % 3;
 		primeravez = false;
-		if (estaLleno(fila, columna))
+		if (EstaLleno(fila, columna))
 		{
 			std::cout << "esta lleno";
 			celdasDisponibles(fila, columna);
 		}
 		return true;
 	}
-	else if (estaLleno(fila, columna))
+	else if (EstaLleno(fila, columna))
 	{
 		std::cout << "ola\n";
 	}
