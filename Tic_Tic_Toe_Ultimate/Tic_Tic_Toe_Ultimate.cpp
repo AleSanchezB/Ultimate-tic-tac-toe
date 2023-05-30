@@ -79,8 +79,9 @@ int HaGanado(int fila, int columna) {
 	JugO = 0;
 	//Checa diagonal izquierda
 	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++) {
-		if (tableroPrincipal[i][i].jugador == Jugador::X)JugX++;
-		if (tableroPrincipal[i][i].jugador == Jugador::O)JugO++;
+		if (tableroPrincipal[i][columna].jugador == Jugador::X)JugX++;
+		if (tableroPrincipal[i][columna].jugador == Jugador::O)JugO++;
+		columna++;
 	}
 	if (JugX == 3) {
 		std::cout << "Jugador 1 ha ganado.";
@@ -94,8 +95,9 @@ int HaGanado(int fila, int columna) {
 	JugO = 0;
 	//Checa diagonal derecha
 	for (int i = 3 * (fila / 3)+2; i >= 3 * (fila / 3); i--) {
-		if (tableroPrincipal[i][i].jugador == Jugador::X)JugX++;
-		if (tableroPrincipal[i][i].jugador == Jugador::O)JugO++;
+		if (tableroPrincipal[i][columna].jugador == Jugador::X)JugX++;
+		if (tableroPrincipal[i][columna].jugador == Jugador::O)JugO++;
+		columna++;
 	}
 	if (JugX == 3) {
 		std::cout << "Jugador 1 ha ganado.";
