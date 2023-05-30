@@ -19,7 +19,7 @@ struct Celda
 
 Celda** tableroPrincipal; //este tablero contiene a los jugadores X o O
 bool** tableroGrande; //tablero de 3x3 que repsenta el gato mas grande
-bool** tableroDisponible; //tablero del mismo tamaño que el principal de 9x9 el cual contiene las posiciones que estan ocupadas
+bool** tableroDisponible; //tablero del mismo tamaï¿½o que el principal de 9x9 el cual contiene las posiciones que estan ocupadas
 bool estaLleno(int, int);
 
 void celdasDisponibles(int fila, int columna);
