@@ -145,12 +145,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FuncionesMouse.cpp" />
     <ClCompile Include="Gato interno.cpp" />
+    <ClCompile Include="Gatote.cpp" />
     <ClCompile Include="Juego.cpp" />
     <ClCompile Include="Tic_Tic_Toe_Ultimate.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FuncionesMouse.h" />
     <ClInclude Include="Gato interno.h" />
+    <ClInclude Include="Gatote.h" />
     <ClInclude Include="Juego.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
