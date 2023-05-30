@@ -145,12 +145,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Gato interno.cpp" />
     <ClCompile Include="Juego.cpp" />
     <ClCompile Include="Tic_Tic_Toe_Ultimate.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Gato interno.h" />
     <ClInclude Include="Juego.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
