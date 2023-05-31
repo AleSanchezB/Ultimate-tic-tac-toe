@@ -142,10 +142,17 @@ bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tab
 	std::cout << (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO);
 	std::cout<<'\n'<<(tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y));
 	std::cout << '\n' << (casillasJugables[fila / 3][columna / 3]);
-	if (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3])
+	std::cout << '\n' << (tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)<<"\n---------\n";
+	if (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3]
+		&& tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
+		&&tableroGrande[fila/3][columna/3]==Jugador::INDETERMINADO)
 	{
 		tableroMinis[fila][columna].jugador = jugadorActual;
-		if (tableroGrande[fila / 3][columna / 3] == Jugador::NADIE) TodasLibres(casillasJugables);
+		//Verificar si se llenó
+		Tablero_I_Lleno(fila,columna,tableroMinis,tableroGrande);
+		//Verificar si se ganó
+		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande);
+		if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
 		else CasillaJugable(casillasJugables,fila%3,columna%3);
 		return true;
 	}
