@@ -146,10 +146,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Juego.cpp" />
+    <ClCompile Include="MetaGato.cpp" />
     <ClCompile Include="Tic_Tic_Toe_Ultimate.cpp" />
+    <ClCompile Include="Utilidades_MetaGato.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Juego.h" />
+    <ClInclude Include="MetaGato.h" />
+    <ClInclude Include="Utilidades_MetaGato.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
