@@ -74,15 +74,21 @@ int main()
 			}
 			else if (evento.type == sf::Event::MouseButtonPressed)
 			{
-				if (evento.mouseButton.button == sf::Mouse::Left)
+				sf::Vector2i posicionMouse = sf::Mouse::getPosition(ventana);
+				if (evento.mouseButton.button == sf::Mouse::Left&& ValidarClick(posicionMouse,tableroMinis,casillasDisponibles,tableroGrande))
 				{
-					sf::Vector2i posicionMouse = sf::Mouse::getPosition(ventana);
-					if (ManejarClick(posicionMouse, jugadorActual, tableroMinis, casillasDisponibles, tableroGrande))
-						jugadorActual = (jugadorActual == Jugador::X) ? Jugador::O : Jugador::X;
+					GestionJugada(posicionMouse, jugadorActual, tableroMinis, casillasDisponibles, tableroGrande);
+					if (HaGanado(tableroGrande, jugadorActual)) {
+						std::cout << "Un jugador ha ganado\n";
+						//Aquí irían las gestiones de que alguien ganó
+					}
+					if (EstaLleno(tableroGrande)) {
+						//Aquí irían las gestiones del empate
+					}
+					jugadorActual = (jugadorActual == Jugador::X) ? Jugador::O : Jugador::X;
 				}
 			}
 		}
-
 		ventana.clear(sf::Color::Black);
 		dibujarReloj(ventana, Reloj);
 		dibujarTablero(ventana,tableroMinis,casillasDisponibles,tableroGrande);
