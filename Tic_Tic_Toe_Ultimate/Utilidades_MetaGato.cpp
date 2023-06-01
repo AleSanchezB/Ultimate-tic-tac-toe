@@ -3,11 +3,14 @@
 void Tablero_I_Lleno(int fila, int columna, Celda** tablero, Jugador** tableroGrande, bool** casillasJugables)
 {
 	int cont = 0;
-	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++)
+    int filaInterna = 0, colInterna = 0;
+    filaInterna = 3 * (fila / 3);
+    colInterna = 3 * (columna / 3);
+	for (int i = 0; i < 3; i++)
 	{
-		for (int j = 3 * (columna / 3); j < 3 * (columna / 3) + 3; j++)
+		for (int j = 0; j <  3; j++)
 		{
-			if (tablero[i][j].jugador != Jugador::INDETERMINADO) cont++;
+			if (tablero[filaInterna+i][colInterna+j].jugador != Jugador::INDETERMINADO) cont++;
 		}
 	}
 	if (cont == 9) {
@@ -22,7 +25,6 @@ void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador**
     int filaInterna = 0, colInterna = 0;
     filaInterna = 3 * (fila / 3);
     colInterna = 3 * (columna / 3);
-    //Checa de forma horizontal
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)

@@ -1,6 +1,6 @@
 #include "MetaGato.h"
 
-Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
+bool HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 	int jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
 	//Checa líneas verticales y horizontales
 	for (int i = 0; i < 3; i++)
@@ -18,15 +18,15 @@ Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 		if (tableroGanados[2 - i][2 - i] == quienJugo) jugDiagDer++;
 		//Verifica ganador, si lo hay
 		if (jugVer == 3 || jugHor == 3) {
-			return quienJugo;
+			return true;
 		}
 		jugVer = 0;
 		jugHor = 0;
 	}
 	if (jugDiagIzq == 3 || jugDiagDer == 3) {
-		return quienJugo;
+		return true;
 	}
-	return Jugador::INDETERMINADO;
+	return false;
 }
 /****************************************************************************************************/
 
@@ -166,8 +166,20 @@ void CasillaJugable(bool** casillasDisponibles, int fila, int columna) {
 }
 /****************************************************************************************************/
 
-bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande)
+void GestionJugada(sf::Vector2i posicionMouse, Jugador &jugadorActual, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande)
 {
+	int columna = posicionMouse.x % 540 / TAM_CELDA;
+	int fila = posicionMouse.y % 540 / TAM_CELDA;
+		tableroMinis[fila][columna].jugador = jugadorActual;
+		//Verificar si se llenó
+		Tablero_I_Lleno(fila, columna, tableroMinis, tableroGrande, casillasJugables);
+		//Verificar si se ganó
+		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande, casillasJugables, jugadorActual);
+		if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
+		else CasillaJugable(casillasJugables, fila % 3, columna % 3);
+}
+/****************************************************************************************************/
+bool ValidarClick(sf::Vector2i posicionMouse,Celda**tableroMinis,bool** casillasJugables,Jugador** tableroGrande) {
 	int columna = posicionMouse.x % 540 / TAM_CELDA;
 	int fila = posicionMouse.y % 540 / TAM_CELDA;
 	std::cout << (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO);
@@ -177,15 +189,20 @@ bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tab
 	if (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3]
 		&& tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
 		&& tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)
-	{
-		tableroMinis[fila][columna].jugador = jugadorActual;
-		//Verificar si se llenó
-		Tablero_I_Lleno(fila, columna, tableroMinis, tableroGrande, casillasJugables);
-		//Verificar si se ganó
-		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande, casillasJugables, jugadorActual);
-		if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
-		else CasillaJugable(casillasJugables, fila % 3, columna % 3);
+		return true;
+	return false;
+}
+/****************************************************************************************************/
+bool EstaLleno(Jugador** tableroGrande) {
+	int contador = 0;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (tableroGrande[i][j] != Jugador::INDETERMINADO) contador++;
+		}
+	}
+	if (contador == 9) {
+		std::cout << "EL juego se ha empatado\n";
 		return true;
 	}
 	return false;
-}
+ }
