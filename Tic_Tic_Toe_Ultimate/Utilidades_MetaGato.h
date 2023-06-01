@@ -9,7 +9,7 @@ struct Celda
 	Jugador jugador = Jugador::INDETERMINADO;
 };
 
-void Tablero_I_Lleno(int fila, int columna, Celda** tablero, Jugador** tableroGrande);
-void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador** tableroGanados);
+void Tablero_I_Lleno(int fila, int columna, Celda** tablero, Jugador** tableroGrande, bool**);
+void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador** tableroGanados, bool**, Jugador);
 
 #endif // !UTILIDADES_METAGATO_H
