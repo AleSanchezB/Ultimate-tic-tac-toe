@@ -1,6 +1,6 @@
 #include "Utilidades_MetaGato.h"
 
-void Tablero_I_Lleno(int fila, int columna, Celda** tablero,Jugador **tableroGrande)
+void Tablero_I_Lleno(int fila, int columna, Celda** tablero, Jugador** tableroGrande, bool** casillasJugables)
 {
 	int cont = 0;
 	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++)
@@ -16,39 +16,38 @@ void Tablero_I_Lleno(int fila, int columna, Celda** tablero,Jugador **tableroGra
 	}
 }
 /********************************************************************************/
-void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador** tableroGanados) {
-	int jugX_Ver = 0, jugX_Hor=0,jugX_Diag=0,jugO_Ver = 0,jugO_Hor=0,jugO_Diag=0, aux = 0;
-	//Checa de forma horizontal
-	for (int i = 3 * (fila / 3); i < 3 * (fila / 3) + 3; i++)
-	{
-		for (int j = 3 * (columna / 3); j < 3 * (columna / 3) + 3; j++)
-		{
-			//Lineas horizontales
-			if (tableroPrincipal[i][j].jugador == Jugador::X)jugX_Hor++;
-			if (tableroPrincipal[i][j].jugador == Jugador::O)jugO_Hor++;
-			//Lineas verticales
-			if (tableroPrincipal[j][i].jugador == Jugador::X)jugX_Ver++;
-			if (tableroPrincipal[j][i].jugador == Jugador::O)jugO_Ver++;
-		}
-		//Lineas diagonales
-		if (tableroPrincipal[i][columna + aux].jugador == Jugador::X) jugX_Diag++;
-		if (tableroPrincipal[i][columna + aux].jugador == Jugador::O) jugO_Diag++;
-		//Verificar si ganó el jugador de las X
-		if (jugX_Ver == 3 || jugX_Hor == 3 || jugX_Diag == 3) {
-			std::cout << "Gano jugador 2\n";
-			tableroGanados[fila / 3][columna / 3] = Jugador::X;
-			return;
-		}
-		//Verificar si ganó el jugador de las O
-		if (jugO_Ver == 3||jugO_Hor==3||jugO_Diag==3) {
-			std::cout << "Gano jugador 2\n";
-			tableroGanados[fila / 3][columna / 3]= Jugador::O;
-			return;
-		}
-		jugX_Ver = 0;
-		jugX_Hor = 0;
-		jugO_Hor = 0;
-		jugO_Ver = 0;
-		aux++;
-	}
+void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador** tableroGanados,bool** casillasJugables, Jugador quienJugo)
+{
+    int jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
+    int filaInterna = 0, colInterna = 0;
+    filaInterna = 3 * (fila / 3);
+    colInterna = 3 * (columna / 3);
+    //Checa de forma horizontal
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            //Lineas horizontales
+            if (tableroPrincipal[filaInterna + i][colInterna + j].jugador == quienJugo)jugHor++;
+            //Lineas verticales
+            if (tableroPrincipal[filaInterna + j][colInterna + i].jugador == quienJugo)jugVer++;
+        }
+        //Diagonal izquierda
+        if (tableroPrincipal[filaInterna + i][colInterna + i].jugador == quienJugo) jugDiagIzq++;
+        //Diagonal derecha
+        if (tableroPrincipal[filaInterna + 2 - i][colInterna + i].jugador == quienJugo) jugDiagDer++;
+        //Verificar si ganó el jugador de las X
+        if (jugVer == 3 || jugHor == 3) {
+            std::cout << "Gano jugador ";
+            tableroGanados[fila / 3][columna / 3] = quienJugo;
+            return;
+        }
+        jugVer = 0;
+        jugHor = 0;
+    }
+    if (jugDiagIzq == 3 || jugDiagDer == 3) {
+        std::cout << "Gano jugador\n";
+        tableroGanados[fila / 3][columna / 3] = quienJugo;
+        return;
+    }
 }

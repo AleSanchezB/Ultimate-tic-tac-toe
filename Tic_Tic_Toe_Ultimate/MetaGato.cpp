@@ -1,28 +1,30 @@
 #include "MetaGato.h"
 
-Jugador HaGanado(Jugador **tableroGanados) {
-	int jugX_Ver = 0, jugO_Ver = 0,jugX_Hor=0,jugO_Hor=0,jugX_Dig=0,jugO_Dig=0,aux = 0;
+Jugador HaGanado(Jugador** tableroGanados) {
+	int jugX_Ver = 0, jugO_Ver = 0, jugX_Hor = 0, jugO_Hor = 0, jugX_Dig = 0, jugO_Dig = 0, aux = 0;
 	//Checa líneas verticales y horizontales
 	for (int i = 0; i < 3; i++)
 	{
-		for (int j =0; j < 3; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			//Lineas verticales
-			if (tableroGanados[i][j]== Jugador::X)jugX_Ver++;
+			if (tableroGanados[i][j] == Jugador::X)jugX_Ver++;
 			if (tableroGanados[i][j] == Jugador::O)jugO_Ver++;
 			//Lineas horizontales
-			if (tableroGanados[i][j] == Jugador::X)jugX_Hor++;
-			if (tableroGanados[i][j]== Jugador::O)jugO_Hor++;
+			if (tableroGanados[j][i] == Jugador::X)jugX_Hor++;
+			if (tableroGanados[j][i] == Jugador::O)jugO_Hor++;
 		}
 		//Verifica diagonales
 		if (tableroGanados[i][i] == Jugador::X)  jugX_Dig++;
 		if (tableroGanados[i][i] == Jugador::X)  jugO_Dig++;
 
 		//Verifica ganador, si lo hay
-		if (jugX_Ver == 3||jugX_Hor==3||jugX_Dig==3) {
+		if (jugX_Ver == 3 || jugX_Hor == 3 || jugX_Dig == 3) 
+		{
 			return Jugador::X;
 		}
-		if (jugO_Ver==3||jugO_Hor == 3||jugO_Dig==3) {
+		if (jugO_Ver == 3 || jugO_Hor == 3 || jugO_Dig == 3) 
+		{
 			return Jugador::O;
 		}
 	}
@@ -30,11 +32,11 @@ Jugador HaGanado(Jugador **tableroGanados) {
 }
 /****************************************************************************************************/
 
-void InicializarTablero(Celda** &tableroMinis,bool** &casillaJugable,Jugador** &tableroGrande)
+void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**& tableroGrande)
 {
 	tableroMinis = new Celda * [9];
 	casillaJugable = new bool* [3];
-	tableroGrande = new Jugador* [3];
+	tableroGrande = new Jugador * [3];
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -52,7 +54,9 @@ void InicializarTablero(Celda** &tableroMinis,bool** &casillaJugable,Jugador** &
 		{
 			sf::RectangleShape& forma = tableroMinis[i][j].forma;
 			forma.setSize(sf::Vector2f(TAM_TAB_PEQ, TAM_TAB_PEQ));
-			forma.setPosition(j * TAM_CELDA + 2, i * TAM_CELDA + 2);
+			//forma.setPosition(j * TAM_CELDA + 2, i * TAM_CELDA + 2);
+			//forma.setPosition(j * TAM_CELDA + (1280 - 720) + 2, i * TAM_CELDA + 2);
+			forma.setPosition(j * TAM_CELDA + 10, i * TAM_CELDA + 20);
 			forma.setOutlineThickness(4);
 			forma.setOutlineColor(sf::Color(208, 0, 152));
 
@@ -73,14 +77,15 @@ void InicializarTablero(Celda** &tableroMinis,bool** &casillaJugable,Jugador** &
 }
 /****************************************************************************************************/
 
-void dibujarTablero(sf::RenderWindow& ventana,Celda** tableroMinis)
+void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casillasDisponibles, Jugador** tableroGrande)
 {
 	sf::Font fuente;
 	if (!fuente.loadFromFile("Minecraft.ttf"))
 	{
 		return;
 	}
-
+	sf::RectangleShape cuadrado;
+	cuadrado.setSize(sf::Vector2f(TAM_CELDA * 3 + 4, TAM_CELDA * 3 + 4));
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 9; ++j)
@@ -112,6 +117,27 @@ void dibujarTablero(sf::RenderWindow& ventana,Celda** tableroMinis)
 			ventana.draw(simbolo);
 		}
 	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cuadrado.setPosition(TAM_CELDA * j * 3 + 6, TAM_CELDA * i * 3 + 16); // Posición del cuadrado en la esquina superior izquierda
+			if (casillasDisponibles[i][j] && tableroGrande[i][j] == Jugador::INDETERMINADO)
+			{
+				cuadrado.setFillColor(sf::Color(0, 0, 255, 120)); // Color azul transparente (128 de opacidad)
+			}
+			else cuadrado.setFillColor(sf::Color(255, 0, 0, 120)); // Color rojo transparente (128 de opacidad)
+			ventana.draw(cuadrado);
+		}
+	}
+	sf::Text texto;
+	texto.setFont(fuente);
+	texto.setCharacterSize(20);
+	texto.setString("Tiempo de Juego");
+	texto.setFillColor(sf::Color::Black);
+	texto.setPosition(50, ventana.getSize().y - 110);
+	ventana.draw(texto);
 }
 
 /****************************************************************************************************/
@@ -135,25 +161,25 @@ void CasillaJugable(bool** casillasDisponibles, int fila, int columna) {
 }
 /****************************************************************************************************/
 
-bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tableroMinis, bool** casillasJugables,Jugador** tableroGrande)
+bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande)
 {
 	int columna = posicionMouse.x % 540 / TAM_CELDA;
 	int fila = posicionMouse.y % 540 / TAM_CELDA;
 	std::cout << (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO);
-	std::cout<<'\n'<<(tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y));
+	std::cout << '\n' << (tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y));
 	std::cout << '\n' << (casillasJugables[fila / 3][columna / 3]);
-	std::cout << '\n' << (tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)<<"\n---------\n";
+	std::cout << '\n' << (tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO) << "\n---------\n";
 	if (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3]
 		&& tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
-		&&tableroGrande[fila/3][columna/3]==Jugador::INDETERMINADO)
+		&& tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)
 	{
 		tableroMinis[fila][columna].jugador = jugadorActual;
 		//Verificar si se llenó
-		Tablero_I_Lleno(fila,columna,tableroMinis,tableroGrande);
+		Tablero_I_Lleno(fila, columna, tableroMinis, tableroGrande, casillasJugables);
 		//Verificar si se ganó
-		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande);
+		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande, casillasJugables, jugadorActual);
 		if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
-		else CasillaJugable(casillasJugables,fila%3,columna%3);
+		else CasillaJugable(casillasJugables, fila % 3, columna % 3);
 		return true;
 	}
 	return false;
