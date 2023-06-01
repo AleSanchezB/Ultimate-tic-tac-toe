@@ -1,8 +1,8 @@
 #include "MetaGato.h"
 
-Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
+bool HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 	int jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
-	//Checa líneas verticales y horizontales
+	//Checa lÃ­neas verticales y horizontales
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -15,18 +15,18 @@ Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 		//Diagonales izquierdas
 		if (tableroGanados[i][i] == quienJugo)  jugDiagIzq++;
 		//Diagonales derechas
-		if (tableroGanados[2 - i][2 - i] == quienJugo) jugDiagDer++;
+		if (tableroGanados[i][2 - i] == quienJugo) jugDiagDer++;
 		//Verifica ganador, si lo hay
 		if (jugVer == 3 || jugHor == 3) {
-			return quienJugo;
+			return true;
 		}
 		jugVer = 0;
 		jugHor = 0;
 	}
 	if (jugDiagIzq == 3 || jugDiagDer == 3) {
-		return quienJugo;
+		return true;
 	}
-	return Jugador::INDETERMINADO;
+	return false;
 }
 /****************************************************************************************************/
 
@@ -52,9 +52,7 @@ void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**
 		{
 			sf::RectangleShape& forma = tableroMinis[i][j].forma;
 			forma.setSize(sf::Vector2f(TAM_TAB_PEQ, TAM_TAB_PEQ));
-			//forma.setPosition(j * TAM_CELDA + 2, i * TAM_CELDA + 2);
-			//forma.setPosition(j * TAM_CELDA + (1280 - 720) + 2, i * TAM_CELDA + 2);
-			forma.setPosition(j * TAM_CELDA + 10, i * TAM_CELDA + 20);
+			forma.setPosition((float)(j * TAM_CELDA + 10), (float)(i * TAM_CELDA + 5));
 			forma.setOutlineThickness(4);
 			forma.setOutlineColor(sf::Color(208, 0, 152));
 
@@ -77,11 +75,6 @@ void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**
 
 void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casillasDisponibles, Jugador** tableroGrande)
 {
-	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
-	{
-		return;
-	}
 	sf::RectangleShape cuadrado;
 	cuadrado.setSize(sf::Vector2f(TAM_CELDA * 3 - 5, TAM_CELDA * 3 - 5));
 	for (int i = 0; i < 9; ++i)
@@ -93,24 +86,18 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 
 			sf::Texture textura;
 			sf::Sprite simbolo;
-			//simbolo.setFont(fuente);
-			//simbolo.setCharacterSize(40);
 
 			if (celda.jugador == Jugador::X)
 			{
 				textura.loadFromFile("X.png");
 				simbolo = sf::Sprite(textura);
-				//simbolo.setString("X");
 				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
-				//simbolo.setFillColor(sf::Color::Yellow);
 			}
 			else if (celda.jugador == Jugador::O)
 			{
 				textura.loadFromFile("O.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
-				//simbolo.setString("O");
-				//simbolo.setFillColor(sf::Color::Cyan);
 			}
 			else
 				continue;
@@ -123,26 +110,49 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 		}
 	}
 
+	sf::RectangleShape simbNadie;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			cuadrado.setPosition(TAM_CELDA * j * 3 + 10, TAM_CELDA * i * 3 + 20); // Posición del cuadrado en la esquina superior izquierda
+			sf::Texture textura;
+			sf::Sprite simbolo;
+
+			cuadrado.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 			if (!casillasDisponibles[i][j] || tableroGrande[i][j] != Jugador::INDETERMINADO)
 			{
-				cuadrado.setFillColor(sf::Color(0, 0, 0, 170)); // Color azul transparente (128 de opacidad)
+				cuadrado.setFillColor(sf::Color(0, 0, 0, 170));
 			}
-			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15)); // Color rojo transparente (128 de opacidad)
+			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15));
+
 			ventana.draw(cuadrado);
+
+			if (tableroGrande[i][j] == Jugador::X)
+			{
+				textura.loadFromFile("X.png");
+				simbolo = sf::Sprite(textura);
+				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
+				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);
+				ventana.draw(simbolo);
+			}
+			else if (tableroGrande[i][j] == Jugador::O)
+			{
+				textura.loadFromFile("O.png");
+				simbolo = sf::Sprite(textura);
+				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
+				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);
+				ventana.draw(simbolo);
+			}
+			else if (tableroGrande[i][j] == Jugador::NADIE)
+			{
+				textura.loadFromFile("Assets/Menus/Empate.png");
+				simbolo = sf::Sprite(textura);
+				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
+				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);
+				ventana.draw(simbolo);
+			}
 		}
 	}
-	sf::Text texto;
-	texto.setFont(fuente);
-	texto.setCharacterSize(20);
-	texto.setString("Tiempo de Juego");
-	texto.setFillColor(sf::Color::White);
-	texto.setPosition(50, ventana.getSize().y - 110);
-	ventana.draw(texto);
 }
 
 /****************************************************************************************************/
@@ -166,25 +176,42 @@ void CasillaJugable(bool** casillasDisponibles, int fila, int columna) {
 }
 /****************************************************************************************************/
 
-bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande)
+void GestionJugada(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande)
 {
 	int columna = posicionMouse.x % 540 / TAM_CELDA;
 	int fila = posicionMouse.y % 540 / TAM_CELDA;
-	std::cout << (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO);
-	std::cout << '\n' << (tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y));
-	std::cout << '\n' << (casillasJugables[fila / 3][columna / 3]);
-	std::cout << '\n' << (tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO) << "\n---------\n";
+	tableroMinis[fila][columna].jugador = jugadorActual;
+
+	//Verificar si se lleno
+	Tablero_I_Lleno(fila, columna, tableroMinis, tableroGrande, casillasJugables);
+
+	//Verificar si se gano
+	Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande, casillasJugables, jugadorActual);
+
+	if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
+	else CasillaJugable(casillasJugables, fila % 3, columna % 3);
+}
+/****************************************************************************************************/
+bool ValidarClick(sf::Vector2i posicionMouse, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande) {
+	int columna = posicionMouse.x % 540 / TAM_CELDA;
+	int fila = posicionMouse.y % 540 / TAM_CELDA;
+
 	if (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3]
 		&& tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
 		&& tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)
-	{
-		tableroMinis[fila][columna].jugador = jugadorActual;
-		//Verificar si se llenó
-		Tablero_I_Lleno(fila, columna, tableroMinis, tableroGrande, casillasJugables);
-		//Verificar si se ganó
-		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande, casillasJugables, jugadorActual);
-		if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
-		else CasillaJugable(casillasJugables, fila % 3, columna % 3);
+		return true;
+	return false;
+}
+/****************************************************************************************************/
+bool EstaLleno(Jugador** tableroGrande) {
+	int contador = 0;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (tableroGrande[i][j] != Jugador::INDETERMINADO) contador++;
+		}
+	}
+	if (contador == 9) {
+		std::cout << "EL juego se ha empatado\n";
 		return true;
 	}
 	return false;
