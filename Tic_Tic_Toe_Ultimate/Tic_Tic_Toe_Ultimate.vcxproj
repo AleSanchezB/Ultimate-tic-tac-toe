@@ -145,13 +145,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Juego.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MetaGato.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utilidades_MetaGato.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Juego.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="MetaGato.h" />
     <ClInclude Include="Utilidades_MetaGato.h" />
   </ItemGroup>

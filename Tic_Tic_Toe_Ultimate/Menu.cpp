@@ -1,23 +1,26 @@
-#include "Juego.h"
+#include "Menu.h"
+#include "MetaGato.h"
+#include <Windows.h>
 
 void MostrarInstrucciones(sf::RenderWindow& ventana)
 {
 	sf::Event evento;
-	int Pagina = 0;
-	sf::Texture imgInstrucciones[6];
-	sf::Sprite Instrucciones[6];
-
-	const int FPS = 60;
+	sf::Texture imgInstrucciones[6]; //Texturas de los distintas imagenes de instrucciones
+	sf::Sprite Instrucciones[6]; //Creacion de los objetos
 	sf::Clock reloj;
 	sf::Time tiempo;
 
+	int Pagina = 0;
+	const int FPS = 60;
+
+	//Cargo las texturas de las instrucciones
 	imgInstrucciones[0].loadFromFile("Assets/Menus/ins/0.png");
 	imgInstrucciones[1].loadFromFile("Assets/Menus/ins/1.png");
 	imgInstrucciones[2].loadFromFile("Assets/Menus/ins/2.png");
 	imgInstrucciones[3].loadFromFile("Assets/Menus/ins/3.png");
 	imgInstrucciones[4].loadFromFile("Assets/Menus/ins/4.png");
 	imgInstrucciones[5].loadFromFile("Assets/Menus/ins/5.png");
-
+	//Le agrego a los spirtes las texturas
 	Instrucciones[0] = sf::Sprite(imgInstrucciones[0]);
 	Instrucciones[1] = sf::Sprite(imgInstrucciones[1]);
 	Instrucciones[2] = sf::Sprite(imgInstrucciones[2]);
@@ -34,14 +37,16 @@ void MostrarInstrucciones(sf::RenderWindow& ventana)
 			{
 				ventana.close();
 			}
-
+			//Verifica si se ha presionado la flecha izquierda para regresar una presentacion
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				if (Pagina > 0) Pagina--;
+				if (Pagina == 0) break;
+				Pagina--;
 			}
+			//Verifica si se ha presionado la flecha derecha para avanzaar una presentacion
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				if (Pagina == 5) break;
+				if (Pagina == 5) break;		//	Cuando la presentacion se terminaba, se regresa al menu principal
 				Pagina++;
 			}
 		}
@@ -71,7 +76,7 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 			{
 				ventana.close();
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))		//	Se regresa al menu principal
 			{
 				break;
 			}
@@ -79,57 +84,44 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 
 		ventana.clear(sf::Color::Black);
 		ventana.draw(Creditos);
-		sf::Text texto;
-		texto.setFont(fuente);
-		texto.setCharacterSize(30);
-		texto.setString("Presiona backspace para salir...");
-		texto.setFillColor(sf::Color::White);
-		texto.setPosition(700, 660);
-		ventana.draw(texto);
 		ventana.display();
 	}
 }
 void MostrarJuego(sf::RenderWindow& ventana)
 {
+	const int FPS = 60;
+
 	sf::Clock Reloj;
 	sf::Time tiempo;
-	sf::View view(sf::FloatRect(0, 0, 540, 540));
 	sf::Texture fondotexture;
 	sf::Sprite Fondo;
 	sf::Texture imgFlecha;
 	sf::Sprite flecha;
-	const int FPS = 60;
+	sf::Event evento;
+
+	Jugador jugadorActual = Jugador::X;
+	bool salir = false;
+	int Ganador = 2;
+
 	imgFlecha.loadFromFile("Assets/Menus/Flecha.png");
 	flecha = sf::Sprite(imgFlecha);
-	fondotexture.loadFromFile("Assets/Menus/Fondo.png");
+	flecha.setPosition(560, 126);
 
+	fondotexture.loadFromFile("Assets/Menus/Fondo.png");
 	Fondo = sf::Sprite(fondotexture);
+
 
 	Celda** tableroMinis = nullptr; //este tablero contiene a los jugadores X o O
 	bool** casillasDisponibles = nullptr; //tablero de 3x3 que repsenta d�nde se puede jugar 
 	Jugador** tableroGrande = nullptr; //tablero de 3x3 que simula al MetaGato como un gato normal
-	sf::Event evento;
-	//inicializacion de todo lo necesario para representar al metagato
-	try {
-		InicializarTablero(tableroMinis, casillasDisponibles, tableroGrande);
-	}
-	catch (const std::bad_alloc&) {
-		std::cout << "Error en la asignaci\xA2n de memoria. Saliendo del programa...";
-		return;
-	}
-	catch (...) {
-		std::cout << "Error inesperado. Saliendo del programa...";
-		return;
-	}
 
-	flecha.setPosition(560, 126);
-	Jugador jugadorActual = Jugador::X;
-	bool salir = false;
-	int Ganador = 2;
+	InicializarTablero(tableroMinis, casillasDisponibles, tableroGrande);			//	Inicializacion de todo lo necesario para representar al metagato
+
+
 	while (ventana.isOpen() && !salir)
 	{
 		tiempo = Reloj.getElapsedTime();
-		if (ventana.pollEvent(evento) && tiempo.asSeconds() > 1 / FPS)
+		while (ventana.pollEvent(evento) && tiempo.asSeconds() > 1 / FPS)
 		{
 			if (evento.type == sf::Event::Closed)
 			{
@@ -142,16 +134,15 @@ void MostrarJuego(sf::RenderWindow& ventana)
 				{
 					GestionJugada(posicionMouse, jugadorActual, tableroMinis, casillasDisponibles, tableroGrande);
 					if (HaGanado(tableroGrande, jugadorActual)) {
-						std::cout << "Un jugador ha ganado\n";
-						//Aquí irían las gestiones de que alguien ganó
 						Ganador = (jugadorActual == Jugador::X) ? 0 : 1;
+
 						salir = true;
 						break;
 					}
 					if (EstaLleno(tableroGrande)) {
-						//Aquí irían las gestiones del empate
 						Ganador = 2;
 						salir = true;
+
 						break;
 					}
 					if (jugadorActual == Jugador::X)
@@ -175,19 +166,24 @@ void MostrarJuego(sf::RenderWindow& ventana)
 		ventana.display();
 	}
 	LiberarMemoria(tableroMinis, tableroGrande, casillasDisponibles);
+	Sleep(1500);
 	MostrarResultado(ventana, Ganador);
 }
 void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 {
 	sf::Event evento;
+	sf::Text texto;
+	sf::Text texto2;
 	bool salir = false;
 	sf::Texture imgResultado[3];
 	sf::Sprite Resultado[3];
 
+	//Cargo las texturas de los resultados
 	imgResultado[0].loadFromFile("Assets/Menus/0.png");
 	imgResultado[1].loadFromFile("Assets/Menus/1.png");
 	imgResultado[2].loadFromFile("Assets/Menus/2.png");
 
+	//Agrego las texturas al sprite
 	Resultado[0] = sf::Sprite(imgResultado[0]);
 	Resultado[1] = sf::Sprite(imgResultado[1]);
 	Resultado[2] = sf::Sprite(imgResultado[2]);
@@ -196,6 +192,10 @@ void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 	{
 		return;
 	}
+	texto.setFont(fuente);
+	texto2.setFont(fuente);
+	texto.setCharacterSize(20);
+	texto2.setCharacterSize(20);
 	while (ventana.isOpen() && !salir)
 	{
 		while (ventana.pollEvent(evento))
@@ -204,22 +204,33 @@ void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 			{
 				ventana.close();
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))	//	Se espera a que el jugador presione espacio para volver al menu
 			{
 				salir = true;
-				break;
+				return;
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))	//	Se espera a que el jugador presione espacio para volver al menu
+			{
+				salir = true;
+				MostrarJuego(ventana);
+				return;
 			}
 		}
-
+		//Borro y actualizo la pantalla
 		ventana.clear(sf::Color::Black);
 		ventana.draw(Resultado[Ganador]);
-		sf::Text texto;
-		texto.setFont(fuente);
-		texto.setCharacterSize(30);
-		texto.setString("Presiona espacio para continuar...");
+
+		texto.setString("Presiona espacio para volver al menu...");
 		texto.setFillColor(sf::Color::White);
-		texto.setPosition(700, 660);
+		texto.setPosition(790, 660);
+
+		texto2.setString("Presiona backspace para jugar de nuevo...");
+		texto2.setFillColor(sf::Color::White);
+		texto2.setPosition(790, 690);
+
 		ventana.draw(texto);
+		ventana.draw(texto2);
+
 		ventana.display();
 	}
 }

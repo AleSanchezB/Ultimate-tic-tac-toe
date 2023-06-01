@@ -1,10 +1,6 @@
 #ifndef UTILIDADES_METAGATO_H
 #define UTILIDADES_METAGATO_H
- #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-
+#include <SFML/Graphics.hpp>
 enum class Jugador { INDETERMINADO, X, O,NADIE };
 struct Celda
 {

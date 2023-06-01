@@ -1,8 +1,6 @@
 #include "MetaGato.h"
-
 bool HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 	int jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
-	//Checa líneas verticales y horizontales
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -23,6 +21,7 @@ bool HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 		jugVer = 0;
 		jugHor = 0;
 	}
+	//Verifica ganador, si lo hay. Se hace afuera porque las diagonales se verifican hasta el final del ciclo externo
 	if (jugDiagIzq == 3 || jugDiagDer == 3) {
 		return true;
 	}
@@ -35,7 +34,7 @@ void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**
 	tableroMinis = new Celda * [9];
 	casillaJugable = new bool* [3];
 	tableroGrande = new Jugador * [3];
-
+	//Asigna memoria dinamica al tablero de casillas jugables y al de ganadores del MetaGato
 	for (int i = 0; i < 3; i++)
 	{
 		casillaJugable[i] = new bool[3];
@@ -47,9 +46,11 @@ void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**
 	}
 	for (int i = 0; i < 9; ++i)
 	{
+		//Asignacion de memoria al tablero global
 		tableroMinis[i] = new Celda[9];
 		for (int j = 0; j < 9; ++j)
 		{
+			//Inicializacion de la imagen del tablero global
 			sf::RectangleShape& forma = tableroMinis[i][j].forma;
 			forma.setSize(sf::Vector2f(TAM_TAB_PEQ, TAM_TAB_PEQ));
 			forma.setPosition((float)(j * TAM_CELDA + 10), (float)(i * TAM_CELDA + 5));
@@ -81,12 +82,13 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 	{
 		for (int j = 0; j < 9; ++j)
 		{
+			//Dibuja las celdas correspondientes dependiendo de lo que haya en el tablero global
 			const Celda& celda = tableroMinis[i][j];
 			ventana.draw(celda.forma);
 
 			sf::Texture textura;
 			sf::Sprite simbolo;
-
+			//Dibuja el simbolo correspondiente al jugador que acaba de tomar su turno en el tablero global
 			if (celda.jugador == Jugador::X)
 			{
 				textura.loadFromFile("X.png");
@@ -126,7 +128,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15));
 
 			ventana.draw(cuadrado);
-
+			//Dibuja los simbolos correspondientes a cada estado de los tableros locales (Ganado por X, por O o empatado)
 			if (tableroGrande[i][j] == Jugador::X)
 			{
 				textura.loadFromFile("X.png");
@@ -195,8 +197,7 @@ void GestionJugada(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** ta
 bool ValidarClick(sf::Vector2i posicionMouse, Celda** tableroMinis, bool** casillasJugables, Jugador** tableroGrande) {
 	int columna = posicionMouse.x % 540 / TAM_CELDA;
 	int fila = posicionMouse.y % 540 / TAM_CELDA;
-
-	if (tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3]
+	if (columna < 9 && fila < 9  && tableroMinis[fila][columna].jugador == Jugador::INDETERMINADO && casillasJugables[fila / 3][columna / 3]
 		&& tableroMinis[fila][columna].forma.getGlobalBounds().contains(posicionMouse.x, posicionMouse.y)
 		&& tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)
 		return true;
@@ -210,9 +211,6 @@ bool EstaLleno(Jugador** tableroGrande) {
 			if (tableroGrande[i][j] != Jugador::INDETERMINADO) contador++;
 		}
 	}
-	if (contador == 9) {
-		std::cout << "EL juego se ha empatado\n";
-		return true;
-	}
+	if (contador == 9) return true;
 	return false;
 }

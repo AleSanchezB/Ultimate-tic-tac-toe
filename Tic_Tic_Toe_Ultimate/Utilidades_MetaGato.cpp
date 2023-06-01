@@ -1,5 +1,6 @@
 #include "Utilidades_MetaGato.h"
-
+#include <sstream>
+#include <iomanip>
 void Tablero_I_Lleno(int fila, int columna, Celda** tablero, Jugador** tableroGrande, bool** casillasJugables)
 {
 	int cont = 0;
@@ -13,10 +14,7 @@ void Tablero_I_Lleno(int fila, int columna, Celda** tablero, Jugador** tableroGr
 			if (tablero[filaInterna+i][colInterna+j].jugador != Jugador::INDETERMINADO) cont++;
 		}
 	}
-	if (cont == 9) {
-		std::cout << "Se lleno\n";
-		tableroGrande[fila / 3][columna / 3] = Jugador::NADIE;
-	}
+	if (cont == 9) tableroGrande[fila / 3][columna / 3] = Jugador::NADIE;
 }
 /********************************************************************************/
 void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador** tableroGanados,bool** casillasJugables, Jugador quienJugo)
@@ -40,7 +38,6 @@ void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador**
         if (tableroPrincipal[filaInterna + 2 - i][colInterna + i].jugador == quienJugo) jugDiagDer++;
         //Verificar si gan� el jugador de las X
         if (jugVer == 3 || jugHor == 3) {
-            std::cout << "Gano jugador ";
             tableroGanados[fila / 3][columna / 3] = quienJugo;
             return;
         }
@@ -48,7 +45,6 @@ void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador**
         jugHor = 0;
     }
     if (jugDiagIzq == 3 || jugDiagDer == 3) {
-        std::cout << "Gano jugador\n";
         tableroGanados[fila / 3][columna / 3] = quienJugo;
         return;
     }
@@ -80,7 +76,7 @@ void dibujarReloj(sf::RenderWindow& ventana, sf::Clock& reloj)
     // Obtener el tiempo transcurrido desde el inicio del reloj
     sf::Time tiempoTranscurrido = reloj.getElapsedTime();
 
-    // Obtener la duraci�n total en segundos
+    // Obtener la duracion total en segundos
     int segundos = tiempoTranscurrido.asSeconds();
 
     // Calcular horas, minutos y segundos
@@ -109,11 +105,21 @@ void dibujarReloj(sf::RenderWindow& ventana, sf::Clock& reloj)
     textoReloj.setPosition(55, ventana.getSize().y - 60);
 
     sf::Text texto;
+    sf::Text texto2;
     texto.setFont(fuente);
+    texto2.setFont(fuente);
     texto.setCharacterSize(30);
+    texto2.setCharacterSize(30);
     texto.setString("Tiempo de Juego");
     texto.setFillColor(sf::Color::White);
     texto.setPosition(50, ventana.getSize().y - 110);
+
+
+    texto2.setString("Haga click en la casilla que desea jugar...");
+    texto2.setFillColor(sf::Color(255, 255, 255, 120));
+    texto2.setPosition(620, 350);
+
     ventana.draw(texto);
+    ventana.draw(texto2);
     ventana.draw(textoReloj);
 }
