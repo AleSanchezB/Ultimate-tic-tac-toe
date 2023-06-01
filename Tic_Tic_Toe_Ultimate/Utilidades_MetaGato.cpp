@@ -36,7 +36,7 @@ void Tablero_I_Ganado(int fila, int columna, Celda** tableroPrincipal, Jugador**
         if (tableroPrincipal[filaInterna + i][colInterna + i].jugador == quienJugo) jugDiagIzq++;
         //Diagonal derecha
         if (tableroPrincipal[filaInterna + 2 - i][colInterna + i].jugador == quienJugo) jugDiagDer++;
-        //Verificar si ganó el jugador de las X
+        //Verificar si ganï¿½ el jugador de las X
         if (jugVer == 3 || jugHor == 3) {
             std::cout << "Gano jugador ";
             tableroGanados[fila / 3][columna / 3] = quienJugo;

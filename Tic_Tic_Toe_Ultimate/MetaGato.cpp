@@ -2,7 +2,7 @@
 
 Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
 	int jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
-	//Checa líneas verticales y horizontales
+	//Checa lï¿½neas verticales y horizontales
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -54,7 +54,7 @@ void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**
 			forma.setSize(sf::Vector2f(TAM_TAB_PEQ, TAM_TAB_PEQ));
 			//forma.setPosition(j * TAM_CELDA + 2, i * TAM_CELDA + 2);
 			//forma.setPosition(j * TAM_CELDA + (1280 - 720) + 2, i * TAM_CELDA + 2);
-			forma.setPosition(j * TAM_CELDA + 10, i * TAM_CELDA + 20);
+			forma.setPosition(j * TAM_CELDA + 10, i * TAM_CELDA + 5);
 			forma.setOutlineThickness(4);
 			forma.setOutlineColor(sf::Color(208, 0, 152));
 
@@ -127,7 +127,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			cuadrado.setPosition(TAM_CELDA * j * 3 + 10, TAM_CELDA * i * 3 + 20); // Posición del cuadrado en la esquina superior izquierda
+			cuadrado.setPosition(TAM_CELDA * j * 3 + 10, TAM_CELDA * i * 3 + 5); // Posiciï¿½n del cuadrado en la esquina superior izquierda
 			if (!casillasDisponibles[i][j] || tableroGrande[i][j] != Jugador::INDETERMINADO)
 			{
 				cuadrado.setFillColor(sf::Color(0, 0, 0, 170)); // Color azul transparente (128 de opacidad)
@@ -179,9 +179,9 @@ bool ManejarClick(sf::Vector2i posicionMouse, Jugador jugadorActual, Celda** tab
 		&& tableroGrande[fila / 3][columna / 3] == Jugador::INDETERMINADO)
 	{
 		tableroMinis[fila][columna].jugador = jugadorActual;
-		//Verificar si se llenó
+		//Verificar si se llenï¿½
 		Tablero_I_Lleno(fila, columna, tableroMinis, tableroGrande, casillasJugables);
-		//Verificar si se ganó
+		//Verificar si se ganï¿½
 		Tablero_I_Ganado(fila, columna, tableroMinis, tableroGrande, casillasJugables, jugadorActual);
 		if (tableroGrande[fila % 3][columna % 3] != Jugador::INDETERMINADO) TodasLibres(casillasJugables);
 		else CasillaJugable(casillasJugables, fila % 3, columna % 3);
