@@ -1,32 +1,30 @@
 #include "MetaGato.h"
 
-Jugador HaGanado(Jugador** tableroGanados) {
-	int jugX_Ver = 0, jugO_Ver = 0, jugX_Hor = 0, jugO_Hor = 0, jugX_Dig = 0, jugO_Dig = 0, aux = 0;
+Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
+	int  jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
 	//Checa líneas verticales y horizontales
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
 			//Lineas verticales
-			if (tableroGanados[i][j] == Jugador::X)jugX_Ver++;
-			if (tableroGanados[i][j] == Jugador::O)jugO_Ver++;
+			if (tableroGanados[i][j] == quienJugo)jugVer++;
 			//Lineas horizontales
-			if (tableroGanados[j][i] == Jugador::X)jugX_Hor++;
-			if (tableroGanados[j][i] == Jugador::O)jugO_Hor++;
+			if (tableroGanados[j][i] == quienJugo)jugHor++;
 		}
-		//Verifica diagonales
-		if (tableroGanados[i][i] == Jugador::X)  jugX_Dig++;
-		if (tableroGanados[i][i] == Jugador::X)  jugO_Dig++;
-
+		//Diagonales izquierdas
+		if (tableroGanados[i][i] == quienJugo)  jugDiagIzq++;
+		//Diagonales derechas
+		if (tableroGanados[2 - i][2 - i] == quienJugo) jugDiagDer++;
 		//Verifica ganador, si lo hay
-		if (jugX_Ver == 3 || jugX_Hor == 3 || jugX_Dig == 3) 
-		{
-			return Jugador::X;
+		if (jugVer == 3 || jugHor == 3) {
+			return quienJugo;
 		}
-		if (jugO_Ver == 3 || jugO_Hor == 3 || jugO_Dig == 3) 
-		{
-			return Jugador::O;
-		}
+		jugVer = 0;
+		jugHor = 0;
+	}
+	if (jugDiagIzq == 3 || jugDiagDer == 3) {
+		return quienJugo;
 	}
 	return Jugador::INDETERMINADO;
 }
@@ -80,7 +78,7 @@ void InicializarTablero(Celda**& tableroMinis, bool**& casillaJugable, Jugador**
 void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casillasDisponibles, Jugador** tableroGrande)
 {
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
+	if (!fuente.loadFromFile("minecraft.ttf"))
 	{
 		return;
 	}
@@ -100,7 +98,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			if (celda.jugador == Jugador::X)
 			{
 				simbolo.setString("X");
-				simbolo.setFillColor(sf::Color::Yellow);
+				simbolo.setFillColor(sf::Color::Magenta);
 			}
 			else if (celda.jugador == Jugador::O)
 			{
@@ -123,11 +121,11 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 		for (int j = 0; j < 3; j++)
 		{
 			cuadrado.setPosition(TAM_CELDA * j * 3 + 6, TAM_CELDA * i * 3 + 16); // Posición del cuadrado en la esquina superior izquierda
-			if (casillasDisponibles[i][j] && tableroGrande[i][j] == Jugador::INDETERMINADO)
+			if (!casillasDisponibles[i][j] || tableroGrande[i][j] != Jugador::INDETERMINADO)
 			{
-				cuadrado.setFillColor(sf::Color(0, 0, 255, 120)); // Color azul transparente (128 de opacidad)
+				cuadrado.setFillColor(sf::Color(0, 0, 0, 150)); // Color rojo transparente (128 de opacidad)
 			}
-			else cuadrado.setFillColor(sf::Color(255, 0, 0, 120)); // Color rojo transparente (128 de opacidad)
+			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15)); // Color azul transparente (128 de opacidad)
 			ventana.draw(cuadrado);
 		}
 	}
@@ -135,7 +133,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 	texto.setFont(fuente);
 	texto.setCharacterSize(20);
 	texto.setString("Tiempo de Juego");
-	texto.setFillColor(sf::Color::Black);
+	texto.setFillColor(sf::Color::White);
 	texto.setPosition(50, ventana.getSize().y - 110);
 	ventana.draw(texto);
 }

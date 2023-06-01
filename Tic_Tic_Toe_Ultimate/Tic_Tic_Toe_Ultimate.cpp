@@ -34,7 +34,7 @@ void dibujarReloj(sf::RenderWindow& ventana, sf::Clock& reloj)
 	textoReloj.setFont(fuente);
 	textoReloj.setCharacterSize(20);
 	textoReloj.setString(ss.str());
-	textoReloj.setFillColor(sf::Color::Black);
+	textoReloj.setFillColor(sf::Color::White);
 	textoReloj.setPosition(50, ventana.getSize().y - 60);
 	ventana.draw(textoReloj);
 }
@@ -83,7 +83,7 @@ int main()
 			}
 		}
 
-		ventana.clear(sf::Color::White);
+		ventana.clear(sf::Color::Black);
 		dibujarReloj(ventana, Reloj);
 		dibujarTablero(ventana,tableroMinis,casillasDisponibles,tableroGrande);
 		ventana.display();
