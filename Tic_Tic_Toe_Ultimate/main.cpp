@@ -9,7 +9,7 @@ void dibujarReloj(sf::RenderWindow& ventana, sf::Clock& reloj)
 	// Obtener el tiempo transcurrido desde el inicio del reloj
 	sf::Time tiempoTranscurrido = reloj.getElapsedTime();
 
-	// Obtener la duración total en segundos
+	// Obtener la duraciï¿½n total en segundos
 	int segundos = tiempoTranscurrido.asSeconds();
 
 	// Calcular horas, minutos y segundos
@@ -46,10 +46,10 @@ int main()
 	sf::RenderWindow ventana(sf::VideoMode(1280, 720), "Ultimate Tic Tac Toe");
 	sf::View view(sf::FloatRect(0, 0, 540, 540));
 	Celda** tableroMinis=nullptr; //este tablero contiene a los jugadores X o O
-	bool** casillasDisponibles=nullptr; //tablero de 3x3 que repsenta dónde se puede jugar 
+	bool** casillasDisponibles=nullptr; //tablero de 3x3 que repsenta dï¿½nde se puede jugar 
 	Jugador** tableroGrande=nullptr; //tablero de 3x3 que simula al MetaGato como un gato normal
 	sf::Event evento;
-	//inicialización de todo lo necesario para representar al metagato
+	//inicializaciï¿½n de todo lo necesario para representar al metagato
 	try {
 		InicializarTablero(tableroMinis, casillasDisponibles, tableroGrande);
 	}

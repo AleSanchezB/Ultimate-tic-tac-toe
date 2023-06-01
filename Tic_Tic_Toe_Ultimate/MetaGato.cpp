@@ -1,7 +1,7 @@
 #include "MetaGato.h"
 
 Jugador HaGanado(Jugador** tableroGanados, Jugador quienJugo) {
-	int  jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
+	int jugVer = 0, jugHor = 0, jugDiagIzq = 0, jugDiagDer = 0;
 	//Checa líneas verticales y horizontales
 	for (int i = 0; i < 3; i++)
 	{
@@ -83,7 +83,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 		return;
 	}
 	sf::RectangleShape cuadrado;
-	cuadrado.setSize(sf::Vector2f(TAM_CELDA * 3 + 4, TAM_CELDA * 3 + 4));
+	cuadrado.setSize(sf::Vector2f(TAM_CELDA * 3 - 5, TAM_CELDA * 3 - 5));
 	for (int i = 0; i < 9; ++i)
 	{
 		for (int j = 0; j < 9; ++j)
@@ -91,19 +91,26 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			const Celda& celda = tableroMinis[i][j];
 			ventana.draw(celda.forma);
 
-			sf::Text simbolo;
-			simbolo.setFont(fuente);
-			simbolo.setCharacterSize(40);
+			sf::Texture textura;
+			sf::Sprite simbolo;
+			//simbolo.setFont(fuente);
+			//simbolo.setCharacterSize(40);
 
 			if (celda.jugador == Jugador::X)
 			{
-				simbolo.setString("X");
-				simbolo.setFillColor(sf::Color::Magenta);
+				textura.loadFromFile("X.png");
+				simbolo = sf::Sprite(textura);
+				//simbolo.setString("X");
+				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
+				//simbolo.setFillColor(sf::Color::Yellow);
 			}
 			else if (celda.jugador == Jugador::O)
 			{
-				simbolo.setString("O");
-				simbolo.setFillColor(sf::Color::Cyan);
+				textura.loadFromFile("O.png");
+				simbolo = sf::Sprite(textura);
+				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
+				//simbolo.setString("O");
+				//simbolo.setFillColor(sf::Color::Cyan);
 			}
 			else
 				continue;
@@ -120,12 +127,12 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			cuadrado.setPosition(TAM_CELDA * j * 3 + 6, TAM_CELDA * i * 3 + 16); // Posición del cuadrado en la esquina superior izquierda
+			cuadrado.setPosition(TAM_CELDA * j * 3 + 10, TAM_CELDA * i * 3 + 20); // Posición del cuadrado en la esquina superior izquierda
 			if (!casillasDisponibles[i][j] || tableroGrande[i][j] != Jugador::INDETERMINADO)
 			{
-				cuadrado.setFillColor(sf::Color(0, 0, 0, 150)); // Color rojo transparente (128 de opacidad)
+				cuadrado.setFillColor(sf::Color(0, 0, 0, 170)); // Color azul transparente (128 de opacidad)
 			}
-			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15)); // Color azul transparente (128 de opacidad)
+			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15)); // Color rojo transparente (128 de opacidad)
 			ventana.draw(cuadrado);
 		}
 	}

@@ -147,7 +147,7 @@
   <ItemGroup>
     <ClCompile Include="Juego.cpp" />
     <ClCompile Include="MetaGato.cpp" />
-    <ClCompile Include="Tic_Tic_Toe_Ultimate.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Utilidades_MetaGato.cpp" />
   </ItemGroup>
   <ItemGroup>
