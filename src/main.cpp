@@ -23,7 +23,7 @@ int main()
 	flecha.setPosition(217, 285);
 	//inicializacion de todo lo necesario para representar al metagato
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
+	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
 	{
 		return 0;
 	}

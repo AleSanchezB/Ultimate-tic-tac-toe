@@ -96,7 +96,7 @@ void dibujarReloj(sf::RenderWindow& ventana, sf::Clock& reloj)
 
     // Dibujar el texto del reloj debajo del tablero
     sf::Font fuente;
-    if (!fuente.loadFromFile("Minecraft.ttf"))
+    if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
     {
         return;
     }

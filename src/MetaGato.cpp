@@ -89,13 +89,13 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 
 			if (celda.jugador == Jugador::X)
 			{
-				textura.loadFromFile("X.png");
+				textura.loadFromFile("Assets/X.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
 			}
 			else if (celda.jugador == Jugador::O)
 			{
-				textura.loadFromFile("O.png");
+				textura.loadFromFile("Assets/O.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
 			}
@@ -129,7 +129,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 
 			if (tableroGrande[i][j] == Jugador::X)
 			{
-				textura.loadFromFile("X.png");
+				textura.loadFromFile("Assets/X.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);
@@ -137,7 +137,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			}
 			else if (tableroGrande[i][j] == Jugador::O)
 			{
-				textura.loadFromFile("O.png");
+				textura.loadFromFile("Assets/O.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);
