@@ -1,8 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include "Juego.h"
-#include "MetaGato.h"
-
-using std::cout;
 
 void VerificarSeleccion(sf::RenderWindow& ventana,int posicionY);
 enum {JUGAR = 285, INSTRUCCIONES = 377, CREDITOS = 469, SALIR = 561};
