@@ -56,7 +56,7 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 	sf::Texture imgCreditos;
 	sf::Sprite Creditos;
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
+	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
 	{
 		return;
 	}
@@ -192,7 +192,7 @@ void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 	Resultado[1] = sf::Sprite(imgResultado[1]);
 	Resultado[2] = sf::Sprite(imgResultado[2]);
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Assets/Minecraft.ttf"))
+	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
 	{
 		return;
 	}
