@@ -121,9 +121,15 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			cuadrado.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 			if (!casillasDisponibles[i][j] || tableroGrande[i][j] != Jugador::INDETERMINADO)
 			{
+				cuadrado.setOutlineThickness(0.0f);
 				cuadrado.setFillColor(sf::Color(0, 0, 0, 170));
 			}
-			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15));
+			else 
+			{
+				cuadrado.setFillColor(sf::Color(255, 255, 255, 15));
+				cuadrado.setOutlineThickness(5.0f);
+				cuadrado.setOutlineColor(sf::Color(255,211,0));
+			}
 
 			ventana.draw(cuadrado);
 
