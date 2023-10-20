@@ -1,9 +1,5 @@
-#include <iostream>
-#include "Menu.h"
-#include "MetaGato.h"
-
-void VerificarSeleccion(sf::RenderWindow& ventana, int posicionY);
-enum { JUGAR = 285, INSTRUCCIONES = 377, CREDITOS = 469, SALIR = 561 };
+#include <SFML/Graphics.hpp>
+#include "Juego.h"
 
 int main()
 {
@@ -30,7 +26,7 @@ int main()
 	flecha.setPosition(217, 285);
 	sf::Text texto;
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
+	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
 	{
 		return 0;
 	}

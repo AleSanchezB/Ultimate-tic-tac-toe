@@ -91,13 +91,13 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			//Dibuja el simbolo correspondiente al jugador que acaba de tomar su turno en el tablero global
 			if (celda.jugador == Jugador::X)
 			{
-				textura.loadFromFile("X.png");
+				textura.loadFromFile("Assets/X.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
 			}
 			else if (celda.jugador == Jugador::O)
 			{
-				textura.loadFromFile("O.png");
+				textura.loadFromFile("Assets/O.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setScale(50.f / simbolo.getTexture()->getSize().x, 50.f / simbolo.getTexture()->getSize().y);
 			}
@@ -123,15 +123,21 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			cuadrado.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 			if (!casillasDisponibles[i][j] || tableroGrande[i][j] != Jugador::INDETERMINADO)
 			{
+				cuadrado.setOutlineThickness(0.0f);
 				cuadrado.setFillColor(sf::Color(0, 0, 0, 170));
 			}
-			else cuadrado.setFillColor(sf::Color(255, 255, 255, 15));
+			else 
+			{
+				cuadrado.setFillColor(sf::Color(255, 255, 255, 15));
+				cuadrado.setOutlineThickness(5.0f);
+				cuadrado.setOutlineColor(sf::Color(255,211,0));
+			}
 
 			ventana.draw(cuadrado);
 			//Dibuja los simbolos correspondientes a cada estado de los tableros locales (Ganado por X, por O o empatado)
 			if (tableroGrande[i][j] == Jugador::X)
 			{
-				textura.loadFromFile("X.png");
+				textura.loadFromFile("Assets/X.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);
@@ -139,7 +145,7 @@ void dibujarTablero(sf::RenderWindow& ventana, Celda** tableroMinis, bool** casi
 			}
 			else if (tableroGrande[i][j] == Jugador::O)
 			{
-				textura.loadFromFile("O.png");
+				textura.loadFromFile("Assets/O.png");
 				simbolo = sf::Sprite(textura);
 				simbolo.setPosition((float)(TAM_CELDA * j * 3 + 10), (float)(TAM_CELDA * i * 3 + 5));
 				simbolo.setScale(180.f / simbolo.getTexture()->getSize().x, 180.f / simbolo.getTexture()->getSize().y);

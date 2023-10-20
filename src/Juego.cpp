@@ -31,7 +31,7 @@ void MostrarInstrucciones(sf::RenderWindow& ventana)
 	while (ventana.isOpen())
 	{
 		tiempo = reloj.getElapsedTime();
-		if (ventana.pollEvent(evento) && tiempo.asSeconds() > 1 / FPS)
+		if (ventana.pollEvent(evento) && tiempo.asSeconds() > 1.f / FPS)
 		{
 			if (evento.type == sf::Event::Closed)
 			{
@@ -61,7 +61,7 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 	sf::Texture imgCreditos;
 	sf::Sprite Creditos;
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
+	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
 	{
 		return;
 	}
@@ -121,7 +121,7 @@ void MostrarJuego(sf::RenderWindow& ventana)
 	while (ventana.isOpen() && !salir)
 	{
 		tiempo = Reloj.getElapsedTime();
-		while (ventana.pollEvent(evento) && tiempo.asSeconds() > 1 / FPS)
+		if (ventana.pollEvent(evento) && tiempo.asSeconds() > 1.f / FPS)
 		{
 			if (evento.type == sf::Event::Closed)
 			{
@@ -188,7 +188,7 @@ void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 	Resultado[1] = sf::Sprite(imgResultado[1]);
 	Resultado[2] = sf::Sprite(imgResultado[2]);
 	sf::Font fuente;
-	if (!fuente.loadFromFile("Minecraft.ttf"))
+	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
 	{
 		return;
 	}
