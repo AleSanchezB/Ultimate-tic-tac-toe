@@ -1,19 +1,22 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Juego.h"
+#include <windows.h>
 
 void VerificarSeleccion(sf::RenderWindow& ventana,int posicionY);
 enum {JUGAR = 285, INSTRUCCIONES = 377, CREDITOS = 469, SALIR = 561};
-int main()
-{
-	sf::RenderWindow ventana(sf::VideoMode(1280, 720), "Ultimate Tic Tac Toe");
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+ 
+	sf::RenderWindow ventana(sf::VideoMode(1280, 720), "Ultimate Tic Tac Toe",sf::Style::Close);
 	sf::View view(sf::FloatRect(0, 0, 540, 540));
 	sf::Event evento;
-
+	sf::Music musica;
 	sf::Texture imgDelMenu;
 	sf::Texture imgFlecha;
 	sf::Sprite menu;
 	sf::Sprite flecha;
 
+	musica.openFromFile("Assets/music/musica.ogg");
 	imgDelMenu.loadFromFile("Assets/Menus/MENU NEON.png");
 	imgFlecha.loadFromFile("Assets/Menus/Flecha.png");
 
@@ -27,6 +30,8 @@ int main()
 	{
 		return 0;
 	}
+	musica.play();
+	musica.setLoop(true);
 	while (ventana.isOpen())
 	{
 		if (ventana.pollEvent(evento))

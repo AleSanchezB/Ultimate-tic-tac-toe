@@ -37,7 +37,8 @@ void MostrarInstrucciones(sf::RenderWindow& ventana)
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				if (Pagina > 0) Pagina--;
+				if(Pagina==0) break;
+				Pagina--;
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
@@ -55,11 +56,6 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 	sf::Event evento;
 	sf::Texture imgCreditos;
 	sf::Sprite Creditos;
-	sf::Font fuente;
-	if (!fuente.loadFromFile("Assets/fuentes/Minecraft.ttf"))
-	{
-		return;
-	}
 	imgCreditos.loadFromFile("Assets/Menus/CREDITOS NEON.png");
 	Creditos = sf::Sprite(imgCreditos);
 
@@ -71,7 +67,7 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 			{
 				ventana.close();
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				break;
 			}
@@ -79,13 +75,6 @@ void MostrarCreditos(sf::RenderWindow& ventana)
 
 		ventana.clear(sf::Color::Black);
 		ventana.draw(Creditos);
-		sf::Text texto;
-		texto.setFont(fuente);
-		texto.setCharacterSize(30);
-		texto.setString("Presiona backspace para salir...");
-		texto.setFillColor(sf::Color::White);
-		texto.setPosition(700, 660);
-		ventana.draw(texto);
 		ventana.display();
 	}
 }
@@ -131,6 +120,11 @@ void MostrarJuego(sf::RenderWindow& ventana)
 		tiempo = Reloj.getElapsedTime();
 		if (ventana.pollEvent(evento) && tiempo.asSeconds() > 1.f / FPS)
 		{
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
+			{
+				LiberarMemoria(tableroMinis, tableroGrande, casillasDisponibles);
+				return;
+			}
 			if (evento.type == sf::Event::Closed)
 			{
 				ventana.close();
@@ -204,7 +198,11 @@ void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 			{
 				ventana.close();
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			{
+				MostrarJuego(ventana);
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace))
 			{
 				salir = true;
 				break;
@@ -216,9 +214,12 @@ void MostrarResultado(sf::RenderWindow& ventana, int Ganador)
 		sf::Text texto;
 		texto.setFont(fuente);
 		texto.setCharacterSize(30);
-		texto.setString("Presiona espacio para continuar...");
+		texto.setString("Presiona espacio para otro juego");
 		texto.setFillColor(sf::Color::White);
 		texto.setPosition(700, 660);
+		ventana.draw(texto);
+		texto.setString("Presiona backspace para volver al menu /");
+		texto.setPosition(60,660);
 		ventana.draw(texto);
 		ventana.display();
 	}
